@@ -1,1 +1,1 @@
-# lorawan-iot-shield-mbed
+# LoRaWAN IoT Shield library for mbed
