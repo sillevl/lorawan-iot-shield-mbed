@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/touch/qt1070.h"
+#include "lib/touch/driver/qt1070.h"
 
 namespace IoTShield {
   namespace Tests {

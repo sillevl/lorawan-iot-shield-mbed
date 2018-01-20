@@ -1,5 +1,4 @@
 #include "touch_test.h"
-#include "hal/touch/touch.h"
 
 namespace IoTShield {
   namespace Tests {

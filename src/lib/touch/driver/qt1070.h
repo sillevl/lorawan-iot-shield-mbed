@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lib/i2c/i2c_device.h"
-#include "qt1070_events.h"
+#include "i_qt1070_interrupt_handler.h"
 #include "mbed.h"
 
 namespace IoTShield {
@@ -26,8 +26,7 @@ namespace IoTShield {
 
       public:
         Qt1070(int address, I2C * i2cBus);
-        Qt1070(int address, I2C * i2cBus, PinName changePin);
-        ~Qt1070(void);
+        Qt1070(int address, I2C * i2cBus, PinName changePin, IQt1070InterruptHandler * handler);
 
       public:
         char chip_id(void);
@@ -37,35 +36,21 @@ namespace IoTShield {
         char detection_status(void);
         Qt1070Status status(void);
 
-      public:
-        void register_event_handler(Qt1070Key key, Qt1070ChangeHandler handler);
-
       private:
-        unsigned int get_key_index(Qt1070Key key);
-
         char read_register(Qt1070Register reg);
         void write_register(Qt1070Register reg, char value);
         void set_register_address(Qt1070Register reg);
 
       private:
         static const unsigned int MS_DELAY_TRANSACTION = 1;
-        static const unsigned int NUMBER_OF_KEYS = 7;
 
       private:
-        Qt1070ChangeHandler keyHandlers[NUMBER_OF_KEYS];
-
-      private:
-        // Threading
-        bool interruptEnabled;
-        static int numberOfInstances;
-        int isrSignalFlag;
+        // Interrupt
+        IQt1070InterruptHandler * interruptHandler;
         InterruptIn * changeInterrupt;
-        Thread isrThread;
-        bool keepServingIsr;
 
-        void setup_isr(PinName changePin);
-        void change_isr(void);
-        void change_isr_thread_handler(void);
+        void setup_isr(PinName changePin, IQt1070InterruptHandler * handler);
+        void internal_isr(void);
     };
 
   };

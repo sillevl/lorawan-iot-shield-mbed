@@ -4,30 +4,25 @@
 namespace IoTShield {
   namespace Drivers {
 
-    int Qt1070::numberOfInstances = 0;
-
     Qt1070::Qt1070(int address, I2C * i2cBus)
       : I2cDevice(address, i2cBus) {
 
-        interruptEnabled = false;
         reset();
-        for (unsigned int i = 0; i < NUMBER_OF_KEYS; i++) {
-          keyHandlers[i] = nullptr;
-        }
     }
 
-    Qt1070::Qt1070(int address, I2C * i2cBus, PinName changePin)
+    Qt1070::Qt1070(int address, I2C * i2cBus, PinName changePin, IQt1070InterruptHandler * handler)
       : Qt1070(address, i2cBus) {
 
-        setup_isr(changePin);
+        setup_isr(changePin, handler);
     }
 
-    Qt1070::~Qt1070(void) {
-      if (interruptEnabled) {
-        keepServingIsr = false;
-        isrThread.signal_set(isrSignalFlag);
-        isrThread.join();
-      }
+    void Qt1070::setup_isr(PinName changePin, IQt1070InterruptHandler * handler) {
+      status();   // Make sure all status bytes are read and interrupt is cleared
+
+      this->interruptHandler = handler;
+      changeInterrupt = new InterruptIn(changePin);
+      changeInterrupt->mode(PullUp);
+      changeInterrupt->fall(callback(this, &Qt1070::internal_isr));
     }
 
     char Qt1070::chip_id(void) {
@@ -63,62 +58,9 @@ namespace IoTShield {
       return qtStatus;
     }
 
-    void Qt1070::register_event_handler(Qt1070Key key, Qt1070ChangeHandler handler) {
-      if (interruptEnabled) {
-        unsigned int keyIndex = get_key_index(key);
-        keyHandlers[keyIndex] = handler;
-      }
-    }
-
-    unsigned int Qt1070::get_key_index(Qt1070Key key) {
-      static Qt1070Key KEY_LIST[] = { KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7 };
-
-      for (unsigned int i = 0; i < NUMBER_OF_KEYS; i++) {
-        if (KEY_LIST[i] == key) {
-          return i;
-        }
-      }
-
-      return -1;  // Should never be reached
-    }
-
-    void Qt1070::setup_isr(PinName changePin) {
-      status();   // Make sure all status bytes are read and interrupt is cleared
-
-      changeInterrupt = new InterruptIn(changePin);
-      changeInterrupt->mode(PullUp);
-      changeInterrupt->fall(callback(this, &Qt1070::change_isr));
-      keepServingIsr = true;
-
-      isrSignalFlag = 0x01 << numberOfInstances++;
-      isrThread.start(callback(this, &Qt1070::change_isr_thread_handler));
-      interruptEnabled = true;
-    }
-
-    void Qt1070::change_isr(void) {
-      isrThread.signal_set(isrSignalFlag);
-    }
-
-    void Qt1070::change_isr_thread_handler(void) {
-      char previousKeyState = 0;
-
-      while(keepServingIsr) {
-        Thread::signal_wait(isrSignalFlag);
-        Qt1070Status qtStatus = status();
-
-        if (keepServingIsr && qtStatus.keyStates != previousKeyState) {
-          char changedKeys = previousKeyState ^ qtStatus.keyStates;
-          for (unsigned int i = 0; i < NUMBER_OF_KEYS; i++) {
-            char mask = 0x01 << i;
-            if ((changedKeys & mask) && keyHandlers[i] != nullptr) {
-              Qt1070KeyEvent event;
-              event.key = (Qt1070Key)(changedKeys & mask);
-              event.state = (Qt1070KeyState)((qtStatus.keyStates & mask) >> i);
-              (*(keyHandlers[i]))(event);
-            }
-          }
-        }
-        previousKeyState = qtStatus.keyStates;
+    void Qt1070::internal_isr(void) {
+      if (interruptHandler) {
+        interruptHandler->qt1070_interrupt_occured();
       }
     }
 

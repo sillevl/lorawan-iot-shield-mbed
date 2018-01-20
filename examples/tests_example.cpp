@@ -1,5 +1,6 @@
 #include "build_options.h"
-#ifdef COMPILE_TEST_EXAMPLE
+
+#ifdef TEST_EXAMPLE
 
 #include "mbed.h"
 #include "tests/board_test.h"
@@ -15,7 +16,7 @@ int main() {
   boardTest.run_interactive_tests();
 
   while (true) {
-    wait(1);
+    Thread::wait(1000);
     aliveLed = !aliveLed;
   }
 }
