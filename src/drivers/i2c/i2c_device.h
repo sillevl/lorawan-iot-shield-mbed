@@ -14,7 +14,7 @@ namespace IoTShield {
       public:
         I2cDevice(int address, I2C * i2cBus);
 
-      public:
+      protected:
         bool write(char * data, int length);
         bool read(char * buffer, int length);
     };
