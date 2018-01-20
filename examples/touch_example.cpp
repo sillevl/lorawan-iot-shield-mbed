@@ -16,7 +16,7 @@ class Foo : public IoTShield::ITouchEventHandler {
 
 int main() {
   pc.baud(115200);
-  printf("Booting LoRaWAN IoT Shield in Test Mode ...\r\n");
+  printf("Booting LoRaWAN IoT Shield ...\r\n");
 
   I2C i2c(A4, A5);
   Foo handler;
