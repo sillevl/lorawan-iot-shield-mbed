@@ -1,6 +1,6 @@
 #pragma once
 
-#include "drivers/i2c/i2c_device.h"
+#include "lib/i2c/i2c_device.h"
 
 namespace IoTShield {
   namespace Drivers {
