@@ -2,17 +2,21 @@
 
 #include "lib/touch/touch.h"
 #include "lib/touch/button.h"
+#include "tests/i_test.h"
 
 namespace IoTShield {
   namespace Tests {
 
-    class TouchTest : public ITouchEventHandler {
+    class TouchTest : public ITouchEventHandler, public ITest {
 
       public:
         TouchTest(Serial &pc);
 
       public:
-        bool are_all_pads_touchable(void);
+        TestReport run_all_tests(void);
+
+      private:
+        TestResult are_all_pads_touchable(void);
 
       public:
         virtual void touch_event_occured(TouchEvent event);

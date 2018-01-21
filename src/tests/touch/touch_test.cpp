@@ -12,7 +12,13 @@ namespace IoTShield {
       : terminal(pc) {
     }
 
-    bool TouchTest::are_all_pads_touchable(void) {
+    TestReport TouchTest::run_all_tests(void) {
+      TestReport results("Test suite to check the Touch control");
+      results.add(are_all_pads_touchable());
+      return results;
+    }
+
+    TestResult TouchTest::are_all_pads_touchable(void) {
       I2C i2c(A4, A5);
       IoTShield::Touch touch(0x1B<<1, &i2c, PTB3);
 
@@ -33,7 +39,9 @@ namespace IoTShield {
       }
       printf("\r\n");
 
-      return (numberOfKeysLeftToDetect == 0);
+      TestResult result("Test if all pads are touchable");
+      result.set_result(numberOfKeysLeftToDetect == 0);
+      return result;
     }
 
     void TouchTest::print_touchable_pads_progress(void) {

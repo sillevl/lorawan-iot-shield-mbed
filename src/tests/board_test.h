@@ -15,7 +15,7 @@ namespace IoTShield {
         void run_interactive_tests(void);
 
       private:
-        void run_interactive_touch_tests(TestReport * report);
+        void run_touch_tests(TestReport * totalReport);
 
       private:
         Serial &terminal;
