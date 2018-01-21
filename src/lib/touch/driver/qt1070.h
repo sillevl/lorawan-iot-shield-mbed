@@ -37,11 +37,6 @@ namespace IoTShield {
         Qt1070Status status(void);
 
       private:
-        char read_register(Qt1070Register reg);
-        void write_register(Qt1070Register reg, char value);
-        void set_register_address(Qt1070Register reg);
-
-      private:
         static const unsigned int MS_DELAY_TRANSACTION = 1;
 
       private:

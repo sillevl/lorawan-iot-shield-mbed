@@ -64,27 +64,5 @@ namespace IoTShield {
       }
     }
 
-    char Qt1070::read_register(Qt1070Register reg) {
-      char buffer[1];
-      set_register_address(reg);
-      wait_ms(MS_DELAY_TRANSACTION);
-      read(buffer, sizeof(buffer));
-      wait_ms(MS_DELAY_TRANSACTION);
-      return buffer[0];
-    }
-
-    void Qt1070::write_register(Qt1070Register reg, char value) {
-      char buffer[2];
-      buffer[0] = reg;
-      buffer[1] = value;
-      write(buffer, sizeof(buffer));
-    }
-
-    void Qt1070::set_register_address(Qt1070Register reg) {
-      char buffer[1];
-      buffer[0] = reg;
-      write(buffer, sizeof(buffer));
-    }
-
   };
 };
