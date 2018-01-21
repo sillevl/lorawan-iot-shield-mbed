@@ -1,14 +1,57 @@
 #include "touch_test.h"
+#include "lib/touch/keypad.h"
 
 namespace IoTShield {
   namespace Tests {
 
-    TouchTest::TouchTest(Drivers::Qt1070 * qt1070) {
-      this->qt1070 = qt1070;
+    const TouchKey TouchTest::pads[NUMBER_OF_BUTTONS] = {
+      KEY_1, KEY_4, KEY_5, KEY_2, KEY_3
+    };
+
+    TouchTest::TouchTest(Serial &pc)
+      : terminal(pc) {
     }
 
-    bool TouchTest::is_i2c_available(void) {
-      return this->qt1070->chip_id() == DEFAULT_CHIP_ID;
+    bool TouchTest::are_all_pads_touchable(void) {
+      I2C i2c(A4, A5);
+      IoTShield::Touch touch(0x1B<<1, &i2c, PTB3);
+
+      numberOfKeysLeftToDetect = NUMBER_OF_BUTTONS;
+      for (unsigned int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+        touch.register_event_handler(pads[i], this);
+        hasPadBeenTouched[i] = false;
+      }
+
+      bool keepWaiting = true;
+      printf("Please touch all pads. Press any key in terminal to abort test!\r\n");
+      while (keepWaiting) {
+        if(terminal.readable() || numberOfKeysLeftToDetect == 0) {
+            keepWaiting = false;
+        }
+        print_touchable_pads_progress();
+        wait_ms(10);  // Get rid of the flickering
+      }
+      printf("\r\n");
+
+      return (numberOfKeysLeftToDetect == 0);
     }
+
+    void TouchTest::print_touchable_pads_progress(void) {
+      for (unsigned int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+        terminal.printf("| %s", (hasPadBeenTouched[i] ? "X ": "? "));
+      }
+      printf("|\r");
+      fflush(stdout);
+    }
+
+    void TouchTest::touch_event_occured(TouchEvent event) {
+      for (unsigned int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+        if (pads[i] == event.key && !hasPadBeenTouched[i] && event.state == PRESSED) {
+          hasPadBeenTouched[i] = true;
+          numberOfKeysLeftToDetect--;
+        }
+      }
+    }
+
   };
 };

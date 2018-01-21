@@ -1,10 +1,13 @@
 #include "board_test.h"
+#include "touch/qt1070_test.h"
 #include "touch/touch_test.h"
 
 namespace IoTShield {
   namespace Tests {
 
-    BoardTest::BoardTest(void) { }
+    BoardTest::BoardTest(Serial &pc)
+      : terminal(pc) {
+    }
 
     void BoardTest::run_interactive_tests(void) {
       printf("Running interactive tests\r\n");
@@ -16,13 +19,15 @@ namespace IoTShield {
     }
 
     void BoardTest::run_interactive_touch_tests(TestReport * report) {
-      I2C i2c(A4, A5);
-      IoTShield::Drivers::Qt1070 qt1070(0x1B<<1, &i2c);
-      TouchTest touchtest(&qt1070);
-
-      bool i2cResult = touchtest.is_i2c_available();
+      Qt1070Test qt1070Test;
+      bool i2cResult = qt1070Test.is_i2c_available();
       report->add(i2cResult);
       printf("[%s] QT1070 I2C test\r\n", (i2cResult ? "V" : "X"));
+
+      TouchTest touchTest(terminal);
+      bool touchResult = touchTest.are_all_pads_touchable();
+      report->add(touchResult);
+      printf("[%s] All pads touchable test\r\n", (touchResult ? "V" : "X"));
     }
 
   };

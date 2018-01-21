@@ -12,7 +12,7 @@ int main() {
   pc.baud(115200);
   printf("Booting LoRaWAN IoT Shield in Test Mode ...\r\n");
 
-  IoTShield::Tests::BoardTest boardTest;
+  IoTShield::Tests::BoardTest boardTest(pc);
   boardTest.run_interactive_tests();
 
   while (true) {
