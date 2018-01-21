@@ -22,8 +22,8 @@ namespace IoTShield {
         void write_register(char reg, char value);
         void set_register_address(char reg);
 
-      private:
-        static const unsigned int MS_DELAY_TRANSACTION = 1;
+      protected:
+        static const unsigned int MS_DELAY_TRANSACTION = 5;
     };
 
   };

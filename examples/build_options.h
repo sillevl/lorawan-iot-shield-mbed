@@ -3,4 +3,5 @@
 // #define ALIVE_EXAMPLE
 // #define TOUCH_EXAMPLE
 // #define BUTTON_EXAMPLE
-#define KEYPAD_EXAMPLE
+// #define KEYPAD_EXAMPLE
+#define LEDS_EXAMPLE
