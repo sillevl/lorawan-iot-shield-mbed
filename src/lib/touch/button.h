@@ -8,8 +8,19 @@ namespace IoTShield {
   enum ButtonName {
     BTN_1 = KEY_1,
     BTN_UP = KEY_1,
+
+    BTN_2 = KEY_4,
+    BTN_LEFT = KEY_4,
+
+    BTN_3 = KEY_5,
+    BTN_DOT = KEY_5,
+    BTN_CONFIRM = KEY_5,
+
     BTN_4 = KEY_2,
-    BTN_RIGHT = KEY_2
+    BTN_RIGHT = KEY_2,
+
+    BTN_5 = KEY_3,
+    BTN_DOWN = KEY_3
   };
 
   class Button : public ITouchEventHandler {
