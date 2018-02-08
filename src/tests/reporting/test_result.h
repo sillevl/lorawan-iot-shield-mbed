@@ -34,7 +34,7 @@ namespace IoTShield {
 
         std::string to_string(void) {
           char buffer[8];
-          sprintf(buffer, "[%c] ", (wasTestSuccessful ? 'V': 'X'));
+          sprintf(buffer, "[%c] ", (wasTestSuccessful ? 'V': '!'));
 
           return (std::string(buffer) + description);
         }
