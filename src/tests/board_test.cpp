@@ -1,6 +1,7 @@
 #include "board_test.h"
 #include "touch/qt1070_test.h"
 #include "touch/touch_test.h"
+#include "leds/tlc59116_test.h"
 
 namespace IoTShield {
   namespace Tests {
@@ -14,6 +15,7 @@ namespace IoTShield {
 
       TestReport report("Testsuite to test the whole IoT Shield");
       run_touch_tests(&report);
+      run_led_tests(&report);
 
       printf("%s\r\n", report.to_string().c_str());
     }
@@ -28,50 +30,11 @@ namespace IoTShield {
       totalReport->add(touchReport);
     }
 
-
-
-
-
-
-
-
-
-    // void BoardTest::run_interactive_tests(void) {
-    //   printf("Running interactive tests\r\n");
-    //
-    //   TestReport results;
-    //   run_interactive_touch_tests(&results);
-    //
-    //   printf("%s\r\n", results.to_string().c_str());
-    // }
-
-
-
-
-
-
-
-
-    // void BoardTest::run_interactive_tests(void) {
-    //   printf("Running interactive tests\r\n");
-    //
-    //   TestReport results;
-    //   run_interactive_touch_tests(&results);
-    //
-    //   printf("%s\r\n", results.to_string().c_str());
-    // }
-    //
-    // void BoardTest::run_interactive_touch_tests(TestReport * report) {
-    //   Qt1070Test qt1070Test;
-    //   bool i2cResult = qt1070Test.is_i2c_available();
-    //   report->add(i2cResult);
-    //   printf("[%s] QT1070 I2C test\r\n", (i2cResult ? "V" : "X"));
-    //
-    //   TouchTest touchTest(terminal);
-    //   bool touchResult = touchTest.are_all_pads_touchable();
-    //   report->add(touchResult);
-    //   printf("[%s] All pads touchable test\r\n", (touchResult ? "V" : "X"));
-    // }
+    void BoardTest::run_led_tests(TestReport * totalReport) {
+      TLC59116Test tlcTest(terminal);
+      TestReport tlcReport = tlcTest.run_all_tests();
+      totalReport->add(tlcReport);
+    }
 
   };
 };
