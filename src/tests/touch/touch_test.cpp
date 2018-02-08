@@ -32,7 +32,10 @@ namespace IoTShield {
       printf("Please touch all pads. Press any key in terminal to abort test!\r\n");
       while (keepWaiting) {
         if(terminal.readable() || numberOfKeysLeftToDetect == 0) {
-            keepWaiting = false;
+          keepWaiting = false;
+          if (terminal.readable()) {
+            terminal.getc();  // Need to read the char to clean the buffer
+          }
         }
         print_touchable_pads_progress();
         wait_ms(10);  // Get rid of the flickering
