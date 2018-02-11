@@ -1,10 +1,11 @@
-#include "leds.h"
+#include "Leds.h"
 
 
 Leds::Leds(I2C &i2c):ledDriver(i2c, I2C_ADDRESS)
 {
     ledDriver.enable();
-    ledDriver.setBrightness(0.10);
+    setBrightness(0.50);
+    setAll(Color::BLACK);
 }
 
 void Leds::setBrightness(float brightness)
@@ -21,16 +22,7 @@ void Leds::setLed(int startChannel, Color* color)
 
 void Leds::setColor(int led, Color* color)
 {
-    led--; // zero indexed from now on
-    led = led % 8;
-    
-    int channelMap[8] = {0, 3, 6, 0, 3, 6, 9, 9};
-    int driverMap[8]  = {1, 1, 1, 2, 2, 2, 2, 1};
-    
-    TLC59116* driver = (driverMap[led] == 1) ? &driver1 : &driver2;
-    int startChannel = channelMap[led];
-        
-    setLed(driver, startChannel, color);
+    setLed(led * 3, color);
 }
  
 void Leds::setColor(int led, int color)
@@ -42,8 +34,8 @@ void Leds::setColor(int led, int color)
  
 void Leds::setAll(Color* color)
 {
-    for(int i = 0; i < 8; i++){
-        setColor(i+1, color);
+    for(int i = 0; i < 5; i++){
+        setColor(i, color);
     }
 }
  
@@ -56,7 +48,7 @@ void Leds::setAll(int color)
  
 void Leds::setAll(int* colors)
 {
-    for(int i = 0; i < 8; i++){
-        setColor(i+1, colors[i]);
+    for(int i = 0; i < 5; i++){
+        setColor(i, colors[i]);
     }
 }

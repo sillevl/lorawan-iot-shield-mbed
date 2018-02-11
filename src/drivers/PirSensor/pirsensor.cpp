@@ -1,4 +1,4 @@
-#include "pirsensor.h"
+#include "PirSensor.h"
 
 PirSensor::PirSensor(PinName pinName): input(pinName)
 {

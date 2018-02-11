@@ -1,17 +1,10 @@
 #pragma once
 
-#include "mbed.h"
-#include "pirsensor.h"
+// Drivers
+#include "drivers/C12832/C12832.h"
+#include "drivers/TLC59116/TLC59116.h"
+#include "drivers/PirSensor/PirSensor.h"
 
-class IoTShield
-{
-public:
-    IoTShield();
-    float temperature();
-    PirSensor::State getMotionState();
-
-protected:
-    I2C* i2c;
-    PirSensor pir;
-    Leds leds;
-};
+// Libraries
+#include "lib/Display.h"
+#include "lib/Leds.h"

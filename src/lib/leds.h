@@ -1,11 +1,11 @@
 #pragma once
-#include "tlc59116.h"
-#include "color.h"
+#include "TLC59116.h"
+#include "Color.h"
 
 class Leds
 {
 public:
-    Leds(I2C* i2c);
+    Leds(I2C& i2c);
 
     void off();
     void setBrightness(float brightness);
@@ -17,7 +17,7 @@ public:
 
 protected:
     TLC59116 ledDriver;
-    static const I2C_ADDRESS = 0xC0;
+    static const int I2C_ADDRESS = 0xC0;
 
     void setLed(int startChannel, Color* color);
 };
