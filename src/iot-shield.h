@@ -5,6 +5,7 @@
 #include "drivers/TLC59116/TLC59116.h"
 #include "drivers/PirSensor/PirSensor.h"
 #include "drivers/BME280/BME280.h"
+#include "drivers/MAX44009/MAX44009.h"
 
 // Libraries
 #include "lib/Display.h"
