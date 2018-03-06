@@ -1,9 +1,9 @@
 #include "mbed.h"
 #include "iot-shield.h"
- 
+
 Display lcd;
 I2C i2c(A4, A5);
-VL6180x sensor(&i2c);
+VL6180x sensor(i2c);
 
 int main()
 {
@@ -19,4 +19,3 @@ int main()
         wait(1.0);
     }
 }
- 
